@@ -34,6 +34,7 @@ def train_one_epoch(epoch, dataloader, model, criterion, optimizer):
         if batch_idx % 10 == 0:  # Ajuste a frequência de impressão conforme necessário
             print(f'Epoch: {epoch}, Batch: {batch_idx}, Loss: {loss.item():.4f}')
 
+
 def train_model(model, dataloader, criterion, optimizer, num_epochs, checkpoint_freq, checkpoint_path=None):
     if checkpoint_path and os.path.isfile(checkpoint_path):
         checkpoint = torch.load(checkpoint_path)
@@ -48,7 +49,7 @@ def train_model(model, dataloader, criterion, optimizer, num_epochs, checkpoint_
 
 
 def main():
-    dataset_path = 'C:/Users/Meu Computador/Desktop/projetos/00-Datasets/datasets/alissa_white_gluz/002'
+    dataset_path = 'dataset'
     batch_size = 4
     learning_rate = 0.001
     num_epochs = 100
