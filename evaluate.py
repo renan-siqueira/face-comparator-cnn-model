@@ -32,17 +32,22 @@ def evaluate_similarity(model, image_path1, image_path2, transform):
 
 def main():
     version = 'v1'
-    checkpoint_path = os.path.join(config.APP_PATH_MODELS, version, config.APP_PATH_CHECKPOINT_FILENAME)
 
-    image_path1 = '/path/to/image1.jpg'
-    image_path2 = '/path/to/image2.jpg'
+    checkpoint_path = os.path.join(
+        config.APP_PATH_MODELS,
+        version,
+        config.APP_PATH_CHECKPOINT_FILENAME
+    )
+
+    training_person_path = 'person-training.jpg'
+    other_person_path = 'other-person.jpg'
 
     model = FaceCNN()
     model = load_model(checkpoint_path, model)
     model.eval()
 
     transform = get_transforms()
-    similarity = evaluate_similarity(model, image_path1, image_path2, transform)
+    similarity = evaluate_similarity(model, training_person_path, other_person_path, transform)
     print(f'Similarity: {similarity}')
 
 
