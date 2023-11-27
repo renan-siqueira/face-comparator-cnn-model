@@ -10,29 +10,31 @@ from src.data.face_dataset import FaceDataset
 from src.utils.transforms import get_transforms
 
 
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+print('Device:', device)
+
+
 def load_params(params_path):
     with open(params_path, 'r', encoding='utf-8') as f:
         return json.load(f)
-
 
 def save_model(model, epoch, filename="model_epoch.pth.tar"):
     state = {'epoch': epoch, 'state_dict': model.state_dict()}
     torch.save(state, filename)
 
-
 def save_checkpoint(model, optimizer, epoch, filename="checkpoint_epoch.pth.tar"):
     state = {'epoch': epoch, 'state_dict': model.state_dict(), 'optimizer': optimizer.state_dict()}
     torch.save(state, filename)
-
 
 def load_checkpoint(checkpoint, model, optimizer):
     print("=> Carregando checkpoint")
     model.load_state_dict(checkpoint['state_dict'])
     optimizer.load_state_dict(checkpoint['optimizer'])
 
-
 def train_one_epoch(epoch, dataloader, model, criterion, optimizer):
+    model.to(device)
     for batch_idx, data in enumerate(dataloader):
+        data = data.to(device)
         optimizer.zero_grad()
         outputs = model(data)
         loss = criterion(outputs, outputs)
@@ -42,10 +44,9 @@ def train_one_epoch(epoch, dataloader, model, criterion, optimizer):
         if batch_idx % 10 == 0:
             print(f'Epoch: {epoch}, Batch: {batch_idx}, Loss: {loss.item():.4f}')
 
-
 def train_model(checkpoints_dir, model, dataloader, criterion, optimizer, num_epochs, checkpoint_freq, checkpoint_path=None):
     if checkpoint_path and os.path.isfile(checkpoint_path):
-        checkpoint = torch.load(checkpoint_path)
+        checkpoint = torch.load(checkpoint_path, map_location=device)
         load_checkpoint(checkpoint, model, optimizer)
 
     for epoch in range(1, num_epochs + 1):
@@ -56,7 +57,6 @@ def train_model(checkpoints_dir, model, dataloader, criterion, optimizer, num_ep
         if (epoch) % checkpoint_freq == 0:
             checkpoint_to_save = os.path.join(checkpoints_dir, f'checkpoint_epoch_{epoch}.pth.tar')
             save_checkpoint(model, optimizer, epoch, checkpoint_to_save)
-
 
 def main():
     params = load_params(config.APP_PATH_PARAMS_FILE)
@@ -77,7 +77,7 @@ def main():
     dataset = FaceDataset(dataset_path, transform=transform)
     dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
 
-    model = FaceCNN()
+    model = FaceCNN().to(device)
     optimizer = optim.Adam(model.parameters(), lr=learning_rate)
     criterion = torch.nn.MSELoss()
 
@@ -91,7 +91,6 @@ def main():
         checkpoint_freq,
         checkpoint_path
     )
-
 
 if __name__ == "__main__":
     main()
