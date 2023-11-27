@@ -1,8 +1,12 @@
+import os
 import torch
-from models.cnn_model import FaceCNN
-from utils.transforms import get_transforms
 from PIL import Image
-from utils.similarity import calculate_similarity
+
+from src.settings import config
+from src.models.cnn_model import FaceCNN
+from src.utils.transforms import get_transforms
+from src.utils.similarity import calculate_similarity
+
 
 def load_model(checkpoint_path, model):
     checkpoint = torch.load(checkpoint_path)
@@ -12,7 +16,7 @@ def load_model(checkpoint_path, model):
 def load_image(image_path, transform):
     image = Image.open(image_path).convert('RGB')
     image = transform(image)
-    image = image.unsqueeze(0)  # Adiciona uma dimensão de batch
+    image = image.unsqueeze(0)
     return image
 
 def evaluate_similarity(model, image_path1, image_path2, transform):
@@ -27,7 +31,9 @@ def evaluate_similarity(model, image_path1, image_path2, transform):
     return similarity
 
 def main():
-    checkpoint_path = '/path/to/your/model_checkpoint.pth'
+    version = 'v1'
+    checkpoint_path = os.path.join(config.APP_PATH_MODELS, version, config.APP_PATH_CHECKPOINT_FILENAME)
+
     image_path1 = '/path/to/image1.jpg'
     image_path2 = '/path/to/image2.jpg'
 
@@ -38,6 +44,7 @@ def main():
     transform = get_transforms()
     similarity = evaluate_similarity(model, image_path1, image_path2, transform)
     print(f'Similarity: {similarity}')
+
 
 if __name__ == "__main__":
     main()
