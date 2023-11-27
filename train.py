@@ -2,6 +2,8 @@ import os
 import torch
 import torch.optim as optim
 from torch.utils.data import DataLoader
+
+from src.settings import config
 from src.models.cnn_model import FaceCNN
 from src.data.face_dataset import FaceDataset
 from src.utils.transforms import get_transforms
@@ -49,7 +51,7 @@ def train_model(model, dataloader, criterion, optimizer, num_epochs, checkpoint_
 
 
 def main():
-    dataset_path = 'dataset'
+    dataset_path = config.APP_PATH_DATASET
     batch_size = 4
     learning_rate = 0.001
     num_epochs = 100
