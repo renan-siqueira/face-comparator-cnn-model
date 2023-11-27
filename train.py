@@ -68,6 +68,7 @@ def main():
     version = params['version']
 
     checkpoints_dir = os.path.join(config.APP_PATH_DATA, version, 'weights')
+    os.makedirs(checkpoints_dir, exist_ok=True)
 
     dataset_path = config.APP_PATH_DATASET
     checkpoint_path = os.path.join(checkpoints_dir, 'checkpoint.pth.tar')
