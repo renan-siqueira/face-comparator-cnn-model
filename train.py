@@ -1,4 +1,5 @@
 import os
+import json
 import torch
 import torch.optim as optim
 from torch.utils.data import DataLoader
@@ -7,6 +8,11 @@ from src.settings import config
 from src.models.cnn_model import FaceCNN
 from src.data.face_dataset import FaceDataset
 from src.utils.transforms import get_transforms
+
+
+def load_params(params_path):
+    with open(params_path, 'r', encoding='utf-8') as f:
+        return json.load(f)
 
 
 def save_model(model, epoch, filename="model_epoch.pth.tar"):
@@ -53,12 +59,13 @@ def train_model(checkpoints_dir, model, dataloader, criterion, optimizer, num_ep
 
 
 def main():
-    # PARAMS
-    batch_size = 4
-    learning_rate = 0.001
-    num_epochs = 100
-    checkpoint_freq = 50
-    version = 'v1'
+    params = load_params(config.APP_PATH_PARAMS_FILE)
+
+    batch_size = params['batch_size']
+    learning_rate = params['learning_rate']
+    num_epochs = params['num_epochs']
+    checkpoint_freq = params['checkpoint_freq']
+    version = params['version']
 
     checkpoints_dir = os.path.join(config.APP_PATH_DATA, version, 'weights')
 

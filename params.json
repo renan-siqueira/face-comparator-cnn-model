@@ -1,0 +1,7 @@
+{
+    "batch_size": 4,
+    "learning_rate": 0.001,
+    "num_epochs": 100,
+    "checkpoint_freq": 50,
+    "version": "v1"
+}
