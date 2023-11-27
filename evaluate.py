@@ -13,11 +13,13 @@ def load_model(checkpoint_path, model):
     model.load_state_dict(checkpoint['state_dict'])
     return model
 
+
 def load_image(image_path, transform):
     image = Image.open(image_path).convert('RGB')
     image = transform(image)
     image = image.unsqueeze(0)
     return image
+
 
 def evaluate_similarity(model, image_path1, image_path2, transform):
     image1 = load_image(image_path1, transform)
@@ -30,11 +32,12 @@ def evaluate_similarity(model, image_path1, image_path2, transform):
     similarity = calculate_similarity(feature1, feature2)
     return similarity
 
+
 def main():
     version = 'v1'
 
     checkpoint_path = os.path.join(
-        config.APP_PATH_MODELS,
+        config.APP_PATH_DATA,
         version,
         config.APP_PATH_CHECKPOINT_FILENAME
     )
